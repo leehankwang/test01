@@ -1,29 +1,5 @@
 /* 
- * @file			pfmnum.c
- * @brief			pfm_number ÇÔ¼ö
- * @target			
- * @exec-sys			
- * @exec-dir			
- *
- * @dep-header		
- * @dep-module		
- * @dep-table		
- * @dep-infile		
- * @dep-outfile		
- *
- * @history
- *  ¹ö   Àü  :  ¼º  ¸í  :  ÀÏ    ÀÚ  :  ±Ù °Å ÀÚ ·á  :       º¯       °æ       ³»       ¿ë       
- * ---------   --------   ----------   -------------   ------------------------------------------
- *  Ver 1.00   È²Àç¼·     20050422     NF3.0           CREATE
- *  Ver 2.00   ¼­½Â¿ì     20050522     NF3.0           wrapper versionÀ¸·Î Àç°³¹ß
- *  Ver 2.01   ÃÖµ¿±Ô     20050211     NF3.0           ºÒÇÊ¿äÇÑ º¯¼ö COPY Á¦°Å
- *  Ver 2.02   ÀÌÇÑ±¤     20120913                     Å×½ºÆ®  20120913
- * @pcode
- *
- * À¯ÀÇ : number formatting½Ã¿¡ ¸ÇµÚ¿¡ nullÀÌ µé¾î°¨: HOW ? 
- *
- * TODO : ¼º´É Å×½ºÆ® ¹× tuning : calc, formatting
- * 
+ í…ŒìŠ¤íŠ¸
  */
 
 /* --------------------------------------- include files ---------------------------------------- */
@@ -54,11 +30,11 @@
 
 /* -------------------------------- constant, macro definitions --------------------------------- */
 #define PFMNUM_DEBUG
-#define PFMNUM_TO_STRN          1       /* print¿ë  */
-#define PFMNUM_TO_CMASTRN       2       /* print¿ë  */
-#define PFMNUM_MAX_BUF_CNT      10      /* print¿ë  */
+#define PFMNUM_TO_STRN          1       /* printìš©  */
+#define PFMNUM_TO_CMASTRN       2       /* printìš©  */
+#define PFMNUM_MAX_BUF_CNT      10      /* printìš©  */
 
-/* long typeÀÌ 64bitÀÎÁö 32bitÀÎÁö ¼³Á¤ */
+/* long typeì´ 64bitì¸ì§€ 32bitì¸ì§€ ì„¤ì • */
 //#define LONG64BIT
 
 #define MY_MIN(a, b)            ( (a) < (b) ? (a) : (b) )
@@ -451,7 +427,7 @@ pthread_mutex_t  mutex = PTHREAD_MUTEX_INITIALIZER; /* Mutext Lock */
 /* the base of natural logarithms */
 #if NUMBER_MAX_PREC >= 48
 
-/* 50ÀÚ¸®        : 2.71828182845904523536028747135266249775724709369 */
+/* 50ìë¦¬        : 2.71828182845904523536028747135266249775724709369 */
 const pfmnum_t      g_pfmnum_e    = { 0x1a, 0xc1, 
 										{ 0x82, 0xc7, 0xd2, 0xd1, 0xd2, 0xd4, 0xbb, 0x84, 0xb4, 0xa3, 
 										  0xa4, 0x82, 0xd7, 0xaf, 0x8d, 0xb4, 0xc2, 0x98, 0xe1, 0xcb,
@@ -459,7 +435,7 @@ const pfmnum_t      g_pfmnum_e    = { 0x1a, 0xc1,
 
 #elif NUMBER_MAX_PREC >= 46
 
-/* 50ÀÚ¸®        : 2.718281828459045235360287471352662497757247093 */
+/* 50ìë¦¬        : 2.718281828459045235360287471352662497757247093 */
 const pfmnum_t      g_pfmnum_e    = { 0x19, 0xc1, 
 										{ 0x82, 0xc7, 0xd2, 0xd1, 0xd2, 0xd4, 0xbb, 0x84, 0xb4, 0xa3, 
 										  0xa4, 0x82, 0xd7, 0xaf, 0x8d, 0xb4, 0xc2, 0x98, 0xe1, 0xcb,
@@ -467,7 +443,7 @@ const pfmnum_t      g_pfmnum_e    = { 0x19, 0xc1,
 
 #elif NUMBER_MAX_PREC >= 44
 
-/* 44ÀÚ¸®        : 2.7182818284590452353602874713526624977572470 */
+/* 44ìë¦¬        : 2.7182818284590452353602874713526624977572470 */
 
 const pfmnum_t      g_pfmnum_e    = { 0x17, 0xc1, 
 										{ 0x82, 0xc7, 0xd2, 0xd1, 0xd2, 0xd4, 0xbb, 0x84, 0xb4, 0xa3, 
@@ -475,7 +451,7 @@ const pfmnum_t      g_pfmnum_e    = { 0x17, 0xc1,
 										  0xc8, 0xaf } };
 #elif NUMBER_MAX_PREC >= 42
 
-/* 42ÀÚ¸®        : 2.71828182845904523536028747135266249775724 */
+/* 42ìë¦¬        : 2.71828182845904523536028747135266249775724 */
 const pfmnum_t      g_pfmnum_e    = { 0x17, 0xc1, 
 										{ 0x82, 0xc7, 0xd2, 0xd1, 0xd2, 0xd4, 0xbb, 0x84, 0xb4, 0xa3, 
 										  0xa4, 0x82, 0xd7, 0xaf, 0x8d, 0xb4, 0xc2, 0x98, 0xe1, 0xcb,
@@ -483,14 +459,14 @@ const pfmnum_t      g_pfmnum_e    = { 0x17, 0xc1,
 
 #elif NUMBER_MAX_PREC >= 40
 
-/* 40ÀÚ¸®        : 2.718281828459045235360287471352662497757 */
+/* 40ìë¦¬        : 2.718281828459045235360287471352662497757 */
 const pfmnum_t      g_pfmnum_e    = { 0x16, 0xc1, 
 										{ 0x82, 0xc7, 0xd2, 0xd1, 0xd2, 0xd4, 0xbb, 0x84, 0xb4, 0xa3, 
 										  0xa4, 0x82, 0xd7, 0xaf, 0x8d, 0xb4, 0xc2, 0x98, 0xe1, 0xcb,
 										  0xc6 } };
 #else /* NUMBER_MAX_PREC >= 38 */
 
-/* 38ÀÚ¸® : 2.7182818284590452353602874713526624977  */
+/* 38ìë¦¬ : 2.7182818284590452353602874713526624977  */
 const pfmnum_t      g_pfmnum_e    = { 0x15, 0xc1, 
 										{ 0x82, 0xc7, 0xd2, 0xd1, 0xd2, 0xd4, 0xbb, 0x84, 0xb4, 0xa3, 
 										  0xa4, 0x82, 0xd7, 0xaf, 0x8d, 0xb4, 0xc2, 0x98, 0xe1, 0xc6 } }; 
@@ -543,11 +519,11 @@ static long pfmGetThreadIdx(long ThreadId);
 #if 1 /* 20080731: MRH. NEW NUMBER */
 
 /**************************************************************
-	°ú°Å¹öÀüÀÇ proMapper°¡ number_set_zero ¸¦ »ç¿ëÇÏ°í ÀÖ´Âµ¥,
-	»õ ¹öÀüÀÇ Number´Â ÀÌ ÇÔ¼ö¸¦ ¸ÅÅ©·Î ÇÔ¼ö·Î Ã³¸®ÇÏ°í ÀÖ´Ù.
-	µû¶ó¼­, old »çÀÌÆ®ÀÇ °æ¿ì¿¡ Number¸¦ ÆĞÄ¡ÇÏ·Á¸é 
-	proMapperµµ °°ÀÌ ÆĞÄ¡ ÇÏ´Â ¹®Á¦°¡ ¹ß»ı..
-	ÀÌ·¯ÇÑ ¿µÇâµµ¸¦ ¾ø¾Ö±â À§ÇØ ¿©±â¿¡ ÇØ´ç ÇÔ¼ö¸¦ Ãß°¡ÇÑ´Ù.
+	ê³¼ê±°ë²„ì „ì˜ proMapperê°€ number_set_zero ë¥¼ ì‚¬ìš©í•˜ê³  ìˆëŠ”ë°,
+	ìƒˆ ë²„ì „ì˜ NumberëŠ” ì´ í•¨ìˆ˜ë¥¼ ë§¤í¬ë¡œ í•¨ìˆ˜ë¡œ ì²˜ë¦¬í•˜ê³  ìˆë‹¤.
+	ë”°ë¼ì„œ, old ì‚¬ì´íŠ¸ì˜ ê²½ìš°ì— Numberë¥¼ íŒ¨ì¹˜í•˜ë ¤ë©´ 
+	proMapperë„ ê°™ì´ íŒ¨ì¹˜ í•˜ëŠ” ë¬¸ì œê°€ ë°œìƒ..
+	ì´ëŸ¬í•œ ì˜í–¥ë„ë¥¼ ì—†ì• ê¸° ìœ„í•´ ì—¬ê¸°ì— í•´ë‹¹ í•¨ìˆ˜ë¥¼ ì¶”ê°€í•œë‹¤.
 ***************************************************************/
 #ifdef number_set_zero
 #undef number_set_zero
@@ -982,7 +958,7 @@ longDoubleGetFromStr(long double *x, char *str)
     PFM_CHECK_NULL(x);
     PFM_CHECK_NULL(str);
 
-    /* null string ÀÏ¶§ 0À¸·Î */
+    /* null string ì¼ë•Œ 0ìœ¼ë¡œ */
     if (str[0] == 0x00) {
         bzero(x, sizeof(pfmnum_t));
         return RC_NRM;
@@ -1016,7 +992,7 @@ longDoubleGetFromStr2(long double *x, char *str, long size, long decimal)
     PFM_CHECK_NULL(x);
     PFM_CHECK_NULL(str);
 
-    /* null string ÀÏ¶§ 0À¸·Î */
+    /* null string ì¼ë•Œ 0ìœ¼ë¡œ */
     if (str[0] == 0x00) {
         bzero(x, sizeof(pfmnum_t));
         return RC_NRM;
@@ -1138,7 +1114,7 @@ pfmNumGetFromStr(pfmnum_t *x, char *str)
     PFM_CHECK_NULL(x);
     PFM_CHECK_NULL(str);
 
-    /* null string ÀÏ¶§ 0À¸·Î */
+    /* null string ì¼ë•Œ 0ìœ¼ë¡œ */
     if (str[0] == 0x00) {
         bzero(x, sizeof(pfmnum_t));
         return RC_NRM;
@@ -1173,7 +1149,7 @@ pfmNumGetFromStrn(pfmnum_t *x, char *str, long len)
         goto PFM_CATCH;
     }
 
-    /* null string ÀÏ¶§ 0À¸·Î */
+    /* null string ì¼ë•Œ 0ìœ¼ë¡œ */
     if (str[0] == 0x00) {
         bzero(x, sizeof(pfmnum_t));
         return RC_NRM;
@@ -1230,7 +1206,7 @@ pfmNumGetStrLPadZeroN(char *str, pfmnum_t x, long buf_size)
     }  
 #endif    
 
-    /* shinhan Ç¥ÁØ¿¡ ÀÇÇØ, bufferÀÇ ¾ÕºÎºĞÀÌ '0'À¸·Î padding µÇ°í, ¼ıÀÚ°¡ ¿ìÁ¤·ÄÀÌ µÇ¾î¾ßÇÔ */
+    /* shinhan í‘œì¤€ì— ì˜í•´, bufferì˜ ì•ë¶€ë¶„ì´ '0'ìœ¼ë¡œ padding ë˜ê³ , ìˆ«ìê°€ ìš°ì •ë ¬ì´ ë˜ì–´ì•¼í•¨ */
     NUM_TRY( pfm_zrstrconv(str, mybuf, buf_size));
 
     return RC_NRM;
@@ -1296,10 +1272,10 @@ pfmNumToStrn(char *str, pfmnum_t x, long buf_size)
     if (rc != ERROR_NONE)
 	{
 		/******************************************************************************************
-			"¹öÆÛÅ©±â°¡ ºÎÁ·ÇØ¼­ ¹İ¿Ã¸²ÇÏ¸é °ªÀÌ 0ÀÌ µÇ´Â °æ¿ì" 
+			"ë²„í¼í¬ê¸°ê°€ ë¶€ì¡±í•´ì„œ ë°˜ì˜¬ë¦¼í•˜ë©´ ê°’ì´ 0ì´ ë˜ëŠ” ê²½ìš°" 
 
-			DB½ÇÀÇ ½ºÆåÀº ERROR_BUF_NOT_ENOUGH ¿¡·¯°¡ ¹ß»ıÇÏ°Ô µÇ´Âµ¥,
-			Proframe ÀÇ ½ºÆåÀº ERROR_NUMBER_OUTPUT_TRUNCATED °¡ ¹ß»ıÇÏ´Â °ÍÀ¸·Î ÇÏ±â·Î ÇÔ.
+			DBì‹¤ì˜ ìŠ¤í™ì€ ERROR_BUF_NOT_ENOUGH ì—ëŸ¬ê°€ ë°œìƒí•˜ê²Œ ë˜ëŠ”ë°,
+			Proframe ì˜ ìŠ¤í™ì€ ERROR_NUMBER_OUTPUT_TRUNCATED ê°€ ë°œìƒí•˜ëŠ” ê²ƒìœ¼ë¡œ í•˜ê¸°ë¡œ í•¨.
 		******************************************************************************************/
 		if ( rc == ERROR_BUF_NOT_ENOUGH && number_get_exp10( (&x) ) < 0 ) 
 		{
@@ -1313,7 +1289,7 @@ pfmNumToStrn(char *str, pfmnum_t x, long buf_size)
 
 			rc_tmp = number_to_str( &num_tmp, mybuf_size + 1, mybuf, "N" );
 
-			/* ¾Æ·¡ IF ¹®Àº Ç×»ó ¼º°øÇÒ °ÍÀ¸·Î ±â´ëÇÏÁö¸¸, ¿¹»óÄ¡¸øÇÑ ¹ö±×¸¦ ÇÇÇÏ±â À§ÇØ ³Ö¾îµÒ */
+			/* ì•„ë˜ IF ë¬¸ì€ í•­ìƒ ì„±ê³µí•  ê²ƒìœ¼ë¡œ ê¸°ëŒ€í•˜ì§€ë§Œ, ì˜ˆìƒì¹˜ëª»í•œ ë²„ê·¸ë¥¼ í”¼í•˜ê¸° ìœ„í•´ ë„£ì–´ë‘  */
 			if ( rc_tmp == ERROR_NONE ) rc = ERROR_NUMBER_OUTPUT_TRUNCATED;
 		}
 		/******************************************************************************************/
@@ -1326,8 +1302,8 @@ pfmNumToStrn(char *str, pfmnum_t x, long buf_size)
 		}
 #if 1
 		/*
-		   ±âÁ¸ ¹öÀüÀº ERROR_NUMBER_NOT_ENOUGH_BUFFER ÀÏ¶§µµ, ???°¡ ¾Æ´Ñ ºÎºĞ°á°ú¸¦ ¸®ÅÏÇÑ´Ù.
-		   È£È¯¼º À¯Áö¸¦ À§ÇØ ÀÌ ºÎºĞÀ» Ãß°¡..
+		   ê¸°ì¡´ ë²„ì „ì€ ERROR_NUMBER_NOT_ENOUGH_BUFFER ì¼ë•Œë„, ???ê°€ ì•„ë‹Œ ë¶€ë¶„ê²°ê³¼ë¥¼ ë¦¬í„´í•œë‹¤.
+		   í˜¸í™˜ì„± ìœ ì§€ë¥¼ ìœ„í•´ ì´ ë¶€ë¶„ì„ ì¶”ê°€..
 		*/
 		else if ( rc == ERROR_NUMBER_OUTPUT_TRUNCATED || rc == ERROR_BUF_NOT_ENOUGH )
 		{
@@ -1779,7 +1755,7 @@ pfmNumModDiv(pfmnum_t *v, pfmnum_t *mod, pfmnum_t x, pfmnum_t y)
     pfm_inconv(&y);
 
     /*  
-     * 20050530 : ABS°¡ ºüÁ®µµ mod°ª°ú´Â °ü°è¾ø´Â °ÍÀ¸·Î º¸ÀÓ 
+     * 20050530 : ABSê°€ ë¹ ì ¸ë„ modê°’ê³¼ëŠ” ê´€ê³„ì—†ëŠ” ê²ƒìœ¼ë¡œ ë³´ì„ 
      */
 #if 0   
 	if ((rc = number_abs(&y)) != ERROR_NONE)
@@ -1796,7 +1772,7 @@ pfmNumModDiv(pfmnum_t *v, pfmnum_t *mod, pfmnum_t x, pfmnum_t y)
 		goto PFM_CATCH;
 	if ((rc = number_trunc(&_z)) != ERROR_NONE)
 		goto PFM_CATCH;
-    _v = _z;    /* Ãß°¡ */
+    _v = _z;    /* ì¶”ê°€ */
 	if ((rc = number_mul(&_z, &y)) != ERROR_NONE)
 		goto PFM_CATCH;
 	if ((rc = number_sub(&x, &_z)) != ERROR_NONE)
@@ -1840,10 +1816,10 @@ pfmNumModDiv(pfmnum_t *v, pfmnum_t *mod, pfmnum_t x, pfmnum_t y)
 
     return RC_NRM;
 #endif
-    /* XXX µı°ÅÇÏ°í ³ª¼­ */
+    /* XXX ë”´ê±°í•˜ê³  ë‚˜ì„œ */
 }
 /* --------------------------------------- function body ---------------------------------------- */
-#if 0 /* 20050914 Á¦°Å pfmNumTruncAt/pfmNumRoundAt·Î ´ëÃ¼  */
+#if 0 /* 20050914 ì œê±° pfmNumTruncAt/pfmNumRoundAtë¡œ ëŒ€ì²´  */
 long 
 pfmNumberTruncateAt(pfmnum_t *v, pfmnum_t x, long pos)
 {
@@ -2635,13 +2611,13 @@ pfmNumSubStrn(pfmnum_t *v, pfmnum_t x, char *str, long len)
     PFM_CHECK_NULL(str);
 
 #if 0 
-    printf("[%s] pfmNumGetFromStrn call Àü[str.....-[%s] len......[%ld]\n", __func__, str, len);
+    printf("[%s] pfmNumGetFromStrn call ì „[str.....-[%s] len......[%ld]\n", __func__, str, len);
 #endif 
 
     MY_TRY( pfmNumGetFromStrn(&_str, str, len));
 
 #if 0
-    printf("[%s] pfmNumSub call Àü\n", __func__);
+    printf("[%s] pfmNumSub call ì „\n", __func__);
 #endif 
 
     MY_TRY( pfmNumSub(v, x, _str));
@@ -2895,7 +2871,7 @@ char * pfmNumGetErrorMsg(void)
 
 
 /* ==============================================================================================
- *                                           static ÇÔ¼ö
+ *                                           static í•¨ìˆ˜
  * ============================================================================================== */
 static void 
 pfm_inconv(pfmnum_t *x)
@@ -2959,7 +2935,7 @@ pfm_zrstrconv(char *dest, char *src, long buf_size)
     printf("strconv : src[%s]\n", src);
 #endif
 
-    /* ÃÊ±â ¹öÆÛ Å©±â Ã¼Å© */
+    /* ì´ˆê¸° ë²„í¼ í¬ê¸° ì²´í¬ */
     if ((long)strlen(src) > buf_size) {
 #if 0
         printf("strlen(src) [%ld] bufsize[%ld]\n", strlen(src), buf_size);
@@ -2967,7 +2943,7 @@ pfm_zrstrconv(char *dest, char *src, long buf_size)
         return ERROR_BUF_NOT_ENOUGH;
     }
     
-    /* ºÎÈ£´Â ¸Ç ¾ÕÀ¸·Î */
+    /* ë¶€í˜¸ëŠ” ë§¨ ì•ìœ¼ë¡œ */
     if (src[0] == '-') {
         dest[0] = '-';
         src ++;
@@ -2975,7 +2951,7 @@ pfm_zrstrconv(char *dest, char *src, long buf_size)
         buf_size --;
     }
     
-    /* . ÀÌ ¾Õ¿¡ ÀÖÀ¸¸é 0À» ¾Õ¿¡ ºÙ¿©ÁÜ */
+    /* . ì´ ì•ì— ìˆìœ¼ë©´ 0ì„ ì•ì— ë¶™ì—¬ì¤Œ */
     if (src[0] == '.') {
         dest[0] = '0';
         dest ++;
@@ -2984,8 +2960,8 @@ pfm_zrstrconv(char *dest, char *src, long buf_size)
 
     size = strlen(src);
 
-    /* ".123", "-.01" °ú °°Àº °æ¿ì .¾Õ¿¡ 0À» ºÙ¿©Áà¾ß ÇÏ¹Ç·Î buf°¡ ÇÑ °³´õ ÇÊ¿ä
-     * µû¶ó¼­ ¿©±â¼­ ÇÑ ¹ø´õ Ã¼Å©ÇØ ÁÙ ÇÊ¿ä°¡ ÀÖÀ½ 
+    /* ".123", "-.01" ê³¼ ê°™ì€ ê²½ìš° .ì•ì— 0ì„ ë¶™ì—¬ì¤˜ì•¼ í•˜ë¯€ë¡œ bufê°€ í•œ ê°œë” í•„ìš”
+     * ë”°ë¼ì„œ ì—¬ê¸°ì„œ í•œ ë²ˆë” ì²´í¬í•´ ì¤„ í•„ìš”ê°€ ìˆìŒ 
      */
     if (size > buf_size) {
         return ERROR_BUF_NOT_ENOUGH;
@@ -3030,7 +3006,7 @@ pfm_zrstrconv(char *dest, char *src, long buf_size)
     
     strncpy(dest + d, src + s, (size > buf_size ? buf_size: size) - d);
 
-    /* ±¸¹öÁ¯°ú µ¿ÀÏÇÏ°Ô ÇÏ±â À§ÇØ¼­ */
+    /* êµ¬ë²„ì ¼ê³¼ ë™ì¼í•˜ê²Œ í•˜ê¸° ìœ„í•´ì„œ */
     if (dest[buf_size - 1] != 0x00) {
         dest[buf_size] = 0x00;
     }
@@ -3090,8 +3066,8 @@ pfm_strconv(char *dest, char *src, long buf_size)
 
     size = strlen(src);
 
-    /* ".123", "-.01" °ú °°Àº °æ¿ì .¾Õ¿¡ 0À» ºÙ¿©Áà¾ß ÇÏ¹Ç·Î buf°¡ ÇÑ °³´õ ÇÊ¿ä
-     * µû¶ó¼­ ¿©±â¼­ ÇÑ ¹ø´õ Ã¼Å©ÇØ ÁÙ ÇÊ¿ä°¡ ÀÖÀ½ 
+    /* ".123", "-.01" ê³¼ ê°™ì€ ê²½ìš° .ì•ì— 0ì„ ë¶™ì—¬ì¤˜ì•¼ í•˜ë¯€ë¡œ bufê°€ í•œ ê°œë” í•„ìš”
+     * ë”°ë¼ì„œ ì—¬ê¸°ì„œ í•œ ë²ˆë” ì²´í¬í•´ ì¤„ í•„ìš”ê°€ ìˆìŒ 
      */
     if (size > buf_size) {
         return ERROR_BUF_NOT_ENOUGH;
@@ -3135,7 +3111,7 @@ pfm_strconv(char *dest, char *src, long buf_size)
     
     strncpy(dest + d, src + s, (size > buf_size ? buf_size: size) - d);
 
-    /* ±¸¹öÁ¯°ú µ¿ÀÏÇÏ°Ô ÇÏ±â À§ÇØ¼­ */
+    /* êµ¬ë²„ì ¼ê³¼ ë™ì¼í•˜ê²Œ í•˜ê¸° ìœ„í•´ì„œ */
     if (dest[buf_size - 1] != 0x00) {
         dest[buf_size] = 0x00;
     }
@@ -3184,7 +3160,7 @@ pfm_cmastrconv(char *dest, char *src, long buf_size)
         is_neg = TRUE;
     }
     
-    /* Àı´ë°ªÀÌ 0º¸´Ù ÀÛÀº ¼öÀÏ¶§ Ã³¸® */
+    /* ì ˆëŒ€ê°’ì´ 0ë³´ë‹¤ ì‘ì€ ìˆ˜ì¼ë•Œ ì²˜ë¦¬ */
     if (src[0] == '.') {
         if (src_size + 1 > buf_size) {
             return ERROR_BUF_NOT_ENOUGH;
@@ -3207,16 +3183,16 @@ pfm_cmastrconv(char *dest, char *src, long buf_size)
         }
     }
 
-    /* ÀÌÁ¦´Â Àı´ë°ªÀÌ 0 ÀÌ»óÀÇ ¼ö */
+    /* ì´ì œëŠ” ì ˆëŒ€ê°’ì´ 0 ì´ìƒì˜ ìˆ˜ */
 
-    /* ¼Ò¼öÁ¡ À§Ä¡¸¦ ¾ò´Â´Ù */
+    /* ì†Œìˆ˜ì  ìœ„ì¹˜ë¥¼ ì–»ëŠ”ë‹¤ */
     for (dot_pos = 0; dot_pos < src_size; dot_pos ++) {
         if (src[dot_pos] == '.') {
             break;
         }
     }
     
-    /* comma °³¼ö °è»ê */
+    /* comma ê°œìˆ˜ ê³„ì‚° */
     if (is_neg) {
         comma_cnt = (dot_pos - 2) / 3;
     }
@@ -3224,7 +3200,7 @@ pfm_cmastrconv(char *dest, char *src, long buf_size)
         comma_cnt = (dot_pos - 1) / 3;
     }
 
-    /* ÃæºĞÇÑ buffer °¡ ÀÖ´ÂÁö Ã¼Å© */
+    /* ì¶©ë¶„í•œ buffer ê°€ ìˆëŠ”ì§€ ì²´í¬ */
     if (src_size + comma_cnt > buf_size) {
         return ERROR_BUF_NOT_ENOUGH;
     }
@@ -3270,7 +3246,7 @@ pfmnum_emsg_init(long rc)
     bzero(g_pfmnum_emsg, sizeof(g_pfmnum_emsg));
 
     switch( rc ) {
-        /* PFMNUM¿¡¼­ Á¤ÀÇÇÑ ¿¡·¯ START */
+        /* PFMNUMì—ì„œ ì •ì˜í•œ ì—ëŸ¬ START */
     case ERROR_TOO_BIG_FRMT:
         PFM_MSGINIT(ERROR_TOO_BIG_FRMT);
         break;
@@ -3301,9 +3277,9 @@ pfmnum_emsg_init(long rc)
     case ERROR_TOO_BIG_LONG_VALUE:
         PFM_MSGINIT(ERROR_TOO_BIG_LONG_VALUE);
         break;
-        /* PFMNUM¿¡¼­ Á¤ÀÇÇÑ ¿¡·¯ END */
+        /* PFMNUMì—ì„œ ì •ì˜í•œ ì—ëŸ¬ END */
 
-        /* common_err_code.h¿¡¼­ Á¤ÀÇÇÑ ¿¡·¯ START */
+        /* common_err_code.hì—ì„œ ì •ì˜í•œ ì—ëŸ¬ START */
 	case ERROR_OUT_OF_SHM                      : PFM_MSGINIT(ERROR_OUT_OF_SHM                      ); break;
 	case ERROR_OUT_OF_SHP                      : PFM_MSGINIT(ERROR_OUT_OF_SHP                      ); break;
 	case ERROR_OUT_OF_PHYSICAL_MEM             : PFM_MSGINIT(ERROR_OUT_OF_PHYSICAL_MEM             ); break;
@@ -3312,9 +3288,9 @@ pfmnum_emsg_init(long rc)
 	case ERROR_NOT_IMPLEMENTED                 : PFM_MSGINIT(ERROR_NOT_IMPLEMENTED                 ); break;
 	case ERROR_ENV_NOT_SET                     : PFM_MSGINIT(ERROR_ENV_NOT_SET                     ); break;
 	case ERROR_OUT_OF_FIXED_MEM                : PFM_MSGINIT(ERROR_OUT_OF_FIXED_MEM                ); break;
-        /* common_err_code.h¿¡¼­ Á¤ÀÇÇÑ ¿¡·¯ END   */
+        /* common_err_code.hì—ì„œ ì •ì˜í•œ ì—ëŸ¬ END   */
 	
-        /* datatype_err_code.h¿¡¼­ Á¤ÀÇÇÑ ¿¡·¯ START */
+        /* datatype_err_code.hì—ì„œ ì •ì˜í•œ ì—ëŸ¬ START */
 	case ERROR_DT_ITV_OUT_OF_RANGE_PREC        : PFM_MSGINIT(ERROR_DT_ITV_OUT_OF_RANGE_PREC        ); break;
 	case ERROR_DT_INVALID                      : PFM_MSGINIT(ERROR_DT_INVALID                      ); break;
 	case ERROR_DT_INVALID_TIME                 : PFM_MSGINIT(ERROR_DT_INVALID_TIME                 ); break;
@@ -3400,7 +3376,7 @@ pfmnum_emsg_init(long rc)
 	case ERROR_ROWID_WRONG_BLOCK               : PFM_MSGINIT(ERROR_ROWID_WRONG_BLOCK               ); break;
 	case ERROR_ROWID_WRONG_ROW                 : PFM_MSGINIT(ERROR_ROWID_WRONG_ROW                 ); break;
 	case ERROR_INVALID_IP_STRING               : PFM_MSGINIT(ERROR_INVALID_IP_STRING               ); break;
-        /* datatype_err_code.h¿¡¼­ Á¤ÀÇÇÑ ¿¡·¯ END   */
+        /* datatype_err_code.hì—ì„œ ì •ì˜í•œ ì—ëŸ¬ END   */
     default:
         sprintf(g_pfmnum_emsg, "%s", "UNKNOWN ERRCODE");
     }
@@ -3409,7 +3385,7 @@ pfmnum_emsg_init(long rc)
 /* ============================================================================================== */
 /* ---------------------------------------------------------------------------------------------- */
 /*                                                                                                */
-/*                  PROTOTYPE Áö¿øÀ» À§ÇÑ ÀÓ½Ã ÇÔ¼ö : ÃßÈÄ ±â´É »èÁ¦ ¿¹Á¤                         */
+/*                  PROTOTYPE ì§€ì›ì„ ìœ„í•œ ì„ì‹œ í•¨ìˆ˜ : ì¶”í›„ ê¸°ëŠ¥ ì‚­ì œ ì˜ˆì •                         */
 /*                                                                                                */
 /* ---------------------------------------------------------------------------------------------- */
 /* ============================================================================================== */
@@ -3487,7 +3463,7 @@ pfmNumMulN(long cnt, pfmnum_t *v, pfmnum_t x, ...)
 
 /* --------------------------------------- function body ---------------------------------------- */
 
-/* °í°´ÀÇ Ãß°¡ ¿ä±¸»çÇ×ÀÌ ¾ø´Â ÀÌ»óÀº  simpleÇÏ°Ô ÇÏ±â À§ÇØ¼­ floor¿Í ceilÀº Á¦°øÇÏÁö ¾ÊÀ½ */
+/* ê³ ê°ì˜ ì¶”ê°€ ìš”êµ¬ì‚¬í•­ì´ ì—†ëŠ” ì´ìƒì€  simpleí•˜ê²Œ í•˜ê¸° ìœ„í•´ì„œ floorì™€ ceilì€ ì œê³µí•˜ì§€ ì•ŠìŒ */
 #if 0
 long
 pfmnum_subn(long cnt, pfmnum_t *v, pfmnum_t x, ...)
@@ -3803,13 +3779,13 @@ pfmnum_sqrt(pfmnum_t *x)
 /* --------------------------------------- function body ---------------------------------------- */
 
 /* ==============================================================================================
- *                    original number ÇÔ¼ö¸¦ Á÷Á¢ »ç¿ëÇÏÁö ¾Ê°í ±¸ÇöµÈ ÇÔ¼öµé
+ *                    original number í•¨ìˆ˜ë¥¼ ì§ì ‘ ì‚¬ìš©í•˜ì§€ ì•Šê³  êµ¬í˜„ëœ í•¨ìˆ˜ë“¤
  * ============================================================================================== */
 
 /* --------------------------------------- function body ---------------------------------------- */
 long pfmnum_set_zero(pfmnum_t *x)
 {
-    /* pfmnum_t ¿¡¼­´Â all nullÀ»  ZeroÀÇ Ç¥ÁØÀ¸·Î »ç¿ë */
+    /* pfmnum_t ì—ì„œëŠ” all nullì„  Zeroì˜ í‘œì¤€ìœ¼ë¡œ ì‚¬ìš© */
     PFM_CHECK_NULL(x);
 
     bzero(x, sizeof(pfmnum_t));
@@ -3832,7 +3808,7 @@ pfmnum_is_zero(pfmnum_t *x)
 
     return FALSE;
 }
-/* DBIO ¿ë */
+/* DBIO ìš© */
 /* --------------------------------------- function body ---------------------------------------- */
 long 
 pfmnum_to_int32(pfmnum_t *x, int *y)
@@ -3897,24 +3873,24 @@ pfmnum_println(pfmnum_t *x)
 #endif
 
 
-/* ´ÙÀ½Àº add µÇ´Â ÇÔ¼öµé ÀÔ´Ï´Ù 20050907 */
-/* ´ÙÀ½Àº add µÇ´Â ÇÔ¼öµé ÀÔ´Ï´Ù 20050907 */
-/* ´ÙÀ½Àº add µÇ´Â ÇÔ¼öµé ÀÔ´Ï´Ù 20050907 */
-/* ´ÙÀ½Àº add µÇ´Â ÇÔ¼öµé ÀÔ´Ï´Ù 20050907 */
-/* ´ÙÀ½Àº add µÇ´Â ÇÔ¼öµé ÀÔ´Ï´Ù 20050907 */
-/* ´ÙÀ½Àº add µÇ´Â ÇÔ¼öµé ÀÔ´Ï´Ù 20050907 */
-/* ´ÙÀ½Àº add µÇ´Â ÇÔ¼öµé ÀÔ´Ï´Ù 20050907 */
-/* ´ÙÀ½Àº add µÇ´Â ÇÔ¼öµé ÀÔ´Ï´Ù 20050907 */
-/* ´ÙÀ½Àº add µÇ´Â ÇÔ¼öµé ÀÔ´Ï´Ù 20050907 */
-/* ´ÙÀ½Àº add µÇ´Â ÇÔ¼öµé ÀÔ´Ï´Ù 20050907 */
-/* ´ÙÀ½Àº add µÇ´Â ÇÔ¼öµé ÀÔ´Ï´Ù 20050907 */
-/* ´ÙÀ½Àº add µÇ´Â ÇÔ¼öµé ÀÔ´Ï´Ù 20050907 */
-/* ´ÙÀ½Àº add µÇ´Â ÇÔ¼öµé ÀÔ´Ï´Ù 20050907 */
-/* ´ÙÀ½Àº add µÇ´Â ÇÔ¼öµé ÀÔ´Ï´Ù 20050907 */
-/* ´ÙÀ½Àº add µÇ´Â ÇÔ¼öµé ÀÔ´Ï´Ù 20050907 */
-/* ´ÙÀ½Àº add µÇ´Â ÇÔ¼öµé ÀÔ´Ï´Ù 20050907 */
-/* ´ÙÀ½Àº add µÇ´Â ÇÔ¼öµé ÀÔ´Ï´Ù 20050907 */
-/* ´ÙÀ½Àº add µÇ´Â ÇÔ¼öµé ÀÔ´Ï´Ù 20050907 */
+/* ë‹¤ìŒì€ add ë˜ëŠ” í•¨ìˆ˜ë“¤ ì…ë‹ˆë‹¤ 20050907 */
+/* ë‹¤ìŒì€ add ë˜ëŠ” í•¨ìˆ˜ë“¤ ì…ë‹ˆë‹¤ 20050907 */
+/* ë‹¤ìŒì€ add ë˜ëŠ” í•¨ìˆ˜ë“¤ ì…ë‹ˆë‹¤ 20050907 */
+/* ë‹¤ìŒì€ add ë˜ëŠ” í•¨ìˆ˜ë“¤ ì…ë‹ˆë‹¤ 20050907 */
+/* ë‹¤ìŒì€ add ë˜ëŠ” í•¨ìˆ˜ë“¤ ì…ë‹ˆë‹¤ 20050907 */
+/* ë‹¤ìŒì€ add ë˜ëŠ” í•¨ìˆ˜ë“¤ ì…ë‹ˆë‹¤ 20050907 */
+/* ë‹¤ìŒì€ add ë˜ëŠ” í•¨ìˆ˜ë“¤ ì…ë‹ˆë‹¤ 20050907 */
+/* ë‹¤ìŒì€ add ë˜ëŠ” í•¨ìˆ˜ë“¤ ì…ë‹ˆë‹¤ 20050907 */
+/* ë‹¤ìŒì€ add ë˜ëŠ” í•¨ìˆ˜ë“¤ ì…ë‹ˆë‹¤ 20050907 */
+/* ë‹¤ìŒì€ add ë˜ëŠ” í•¨ìˆ˜ë“¤ ì…ë‹ˆë‹¤ 20050907 */
+/* ë‹¤ìŒì€ add ë˜ëŠ” í•¨ìˆ˜ë“¤ ì…ë‹ˆë‹¤ 20050907 */
+/* ë‹¤ìŒì€ add ë˜ëŠ” í•¨ìˆ˜ë“¤ ì…ë‹ˆë‹¤ 20050907 */
+/* ë‹¤ìŒì€ add ë˜ëŠ” í•¨ìˆ˜ë“¤ ì…ë‹ˆë‹¤ 20050907 */
+/* ë‹¤ìŒì€ add ë˜ëŠ” í•¨ìˆ˜ë“¤ ì…ë‹ˆë‹¤ 20050907 */
+/* ë‹¤ìŒì€ add ë˜ëŠ” í•¨ìˆ˜ë“¤ ì…ë‹ˆë‹¤ 20050907 */
+/* ë‹¤ìŒì€ add ë˜ëŠ” í•¨ìˆ˜ë“¤ ì…ë‹ˆë‹¤ 20050907 */
+/* ë‹¤ìŒì€ add ë˜ëŠ” í•¨ìˆ˜ë“¤ ì…ë‹ˆë‹¤ 20050907 */
+/* ë‹¤ìŒì€ add ë˜ëŠ” í•¨ìˆ˜ë“¤ ì…ë‹ˆë‹¤ 20050907 */
 /* -------------------------------------- global variables -------------------------------------- */
 int      g_pfmutil_int_stack[STACK_MAX];
 pfmnum_t g_pfmnum_stack[STACK_MAX];
@@ -4284,7 +4260,7 @@ __pfmNumCalcVaList( char *fmt, va_list *p_args)
                     rc_p = strpbrk(&t_fmt[1], "dfns%");
                     if (rc_p == NULL) 
                         {
-                            snprintf(g_pfmnum_emsg, sizeof(g_pfmnum_emsg), "pfmnum_calc:%d:Àß¸øµÈ Ç¥Çö½Ä[%s]", __LINE__, fmt);
+                            snprintf(g_pfmnum_emsg, sizeof(g_pfmnum_emsg), "pfmnum_calc:%d:ì˜ëª»ëœ í‘œí˜„ì‹[%s]", __LINE__, fmt);
 							memcpy(p_args, &args, sizeof(va_list));
                             return NULL;
                         }
@@ -4315,7 +4291,7 @@ __pfmNumCalcVaList( char *fmt, va_list *p_args)
                             sprintf(&expr[strlen(expr)], "%s", rc_str);
                             break;
                         default :
-                            snprintf(g_pfmnum_emsg, sizeof(g_pfmnum_emsg), "pfmnum_calc:%d:Àß¸øµÈ Ç¥Çö½Ä[%s]", __LINE__, fmt);
+                            snprintf(g_pfmnum_emsg, sizeof(g_pfmnum_emsg), "pfmnum_calc:%d:ì˜ëª»ëœ í‘œí˜„ì‹[%s]", __LINE__, fmt);
 							memcpy(p_args, &args, sizeof(va_list));
                             return NULL;
                         }
@@ -4335,7 +4311,7 @@ __pfmNumCalcVaList( char *fmt, va_list *p_args)
 
     if (!is_legal(post))
         {
-            snprintf(g_pfmnum_emsg, sizeof(g_pfmnum_emsg), "pfmnum_calc:%d:Àß¸øµÈ Ç¥Çö½Ä[%s]", __LINE__, expr);
+            snprintf(g_pfmnum_emsg, sizeof(g_pfmnum_emsg), "pfmnum_calc:%d:ì˜ëª»ëœ í‘œí˜„ì‹[%s]", __LINE__, expr);
             return NULL;
         }
 
@@ -4386,7 +4362,7 @@ pfmNumCalc(pfmnum_t *num, char *fmt, ...)
                     rc_p = strpbrk(&t_fmt[1], "dfns%");
                     if (rc_p == NULL) 
                         {
-                            snprintf(g_pfmnum_emsg, sizeof(g_pfmnum_emsg), "pfmnum_calc:%d:Àß¸øµÈ Ç¥Çö½Ä[%s]", __LINE__, fmt);
+                            snprintf(g_pfmnum_emsg, sizeof(g_pfmnum_emsg), "pfmnum_calc:%d:ì˜ëª»ëœ í‘œí˜„ì‹[%s]", __LINE__, fmt);
                             return RC_ERR;
                         }
           
@@ -4416,7 +4392,7 @@ pfmNumCalc(pfmnum_t *num, char *fmt, ...)
                             sprintf(&expr[strlen(expr)], "%s", rc_str);
                             break;
                         default :
-                            snprintf(g_pfmnum_emsg, sizeof(g_pfmnum_emsg), "pfmnum_calc:%d:Àß¸øµÈ Ç¥Çö½Ä[%s]", __LINE__, fmt);
+                            snprintf(g_pfmnum_emsg, sizeof(g_pfmnum_emsg), "pfmnum_calc:%d:ì˜ëª»ëœ í‘œí˜„ì‹[%s]", __LINE__, fmt);
                             return RC_ERR;
                         }
                 }
@@ -4433,7 +4409,7 @@ pfmNumCalc(pfmnum_t *num, char *fmt, ...)
 
     if (!is_legal(post))
         {
-            snprintf(g_pfmnum_emsg, sizeof(g_pfmnum_emsg), "pfmnum_calc:%d:Àß¸øµÈ Ç¥Çö½Ä[%s]", __LINE__, expr);
+            snprintf(g_pfmnum_emsg, sizeof(g_pfmnum_emsg), "pfmnum_calc:%d:ì˜ëª»ëœ í‘œí˜„ì‹[%s]", __LINE__, expr);
             return RC_ERR;
         }
 
@@ -4535,7 +4511,7 @@ pfmNumCalcLong(long *lval, char *fmt, ...)
                     rc_p = strpbrk(&t_fmt[1], "dfns%");
                     if (rc_p == NULL) 
                         {
-                            snprintf(g_pfmnum_emsg, sizeof(g_pfmnum_emsg), "pfmnum_calc:%d:Àß¸øµÈ Ç¥Çö½Ä[%s]", __LINE__, fmt);
+                            snprintf(g_pfmnum_emsg, sizeof(g_pfmnum_emsg), "pfmnum_calc:%d:ì˜ëª»ëœ í‘œí˜„ì‹[%s]", __LINE__, fmt);
                             return RC_ERR;
                         }
           
@@ -4564,7 +4540,7 @@ pfmNumCalcLong(long *lval, char *fmt, ...)
                             sprintf(&expr[strlen(expr)], "%s", rc_str);
                             break;
                         default :
-                            snprintf(g_pfmnum_emsg, sizeof(g_pfmnum_emsg), "pfmnum_calc:%d:Àß¸øµÈ Ç¥Çö½Ä[%s]", __LINE__, fmt);
+                            snprintf(g_pfmnum_emsg, sizeof(g_pfmnum_emsg), "pfmnum_calc:%d:ì˜ëª»ëœ í‘œí˜„ì‹[%s]", __LINE__, fmt);
                             return RC_ERR;
                         }
                 }
@@ -4581,7 +4557,7 @@ pfmNumCalcLong(long *lval, char *fmt, ...)
 
     if (!is_legal(post))
         {
-            snprintf(g_pfmnum_emsg, sizeof(g_pfmnum_emsg), "pfmnum_calc:%d:Àß¸øµÈ Ç¥Çö½Ä[%s]", __LINE__, expr);
+            snprintf(g_pfmnum_emsg, sizeof(g_pfmnum_emsg), "pfmnum_calc:%d:ì˜ëª»ëœ í‘œí˜„ì‹[%s]", __LINE__, expr);
             return RC_ERR;
         }
 
@@ -4863,8 +4839,8 @@ postfix(char *dst, char *src)
     init_int_stack();
 
 #if 0
-	/* ¿ø·¡ ¹ö±×´Â AIX¿¡¼­ char -> unsigned char µğÆúÆ®·Î Àû¿ëµÇ¾î »ı±ä ¹®Á¦ÀÓ.          */
-	/* µû¶ó¼­ ÀÌ ºÎºĞ ·çÆ¾Àº ÇÊ¿ä ¾ø°í, ±Ùº»ÀûÀ¸·Î char = signed char ÀÓÀ» º¸ÀåÇØÁÖ¸é OK */
+	/* ì›ë˜ ë²„ê·¸ëŠ” AIXì—ì„œ char -> unsigned char ë””í´íŠ¸ë¡œ ì ìš©ë˜ì–´ ìƒê¸´ ë¬¸ì œì„.          */
+	/* ë”°ë¼ì„œ ì´ ë¶€ë¶„ ë£¨í‹´ì€ í•„ìš” ì—†ê³ , ê·¼ë³¸ì ìœ¼ë¡œ char = signed char ì„ì„ ë³´ì¥í•´ì£¼ë©´ OK */
 	int cnt = 0;
 	char *l_src = src;
 
@@ -5131,18 +5107,18 @@ pfmNumToInFmtStrN
     else if (lpad_zero_flag < 0) lpad_zero = -1;
     else                         lpad_zero = 0;
     
-#if 0   /* Å©±â°¡ 1ÀÛÀº Çö»ó ÇØ°á 1Àº NULLÀÌ »ç¿ëÇÔ */
+#if 0   /* í¬ê¸°ê°€ 1ì‘ì€ í˜„ìƒ í•´ê²° 1ì€ NULLì´ ì‚¬ìš©í•¨ */
     rc = pfm_format_align(str, buf_size, frmt, mybuf, align, lpad_zero);
 #else
     NUM_TRY( pfm_format_align(str, buf_size + 1, frmt, mybuf, align, lpad_zero) );
 #endif
 
-#if 0 /* 20080425: MRH - ºÒÇÊ¿äÇÑ ·ÎÁ÷¶§¹®¿¡ Á¤·ÄÀÌ Àß ¾ÈµÊ */
-    /* 2005.11.28 Ãß°¡ */
-    /* ¿øÈ­, \ Ç¥½Ã¿Í ±İ¾×»çÀÌÀÇ Space Á¦°Å */
+#if 0 /* 20080425: MRH - ë¶ˆí•„ìš”í•œ ë¡œì§ë•Œë¬¸ì— ì •ë ¬ì´ ì˜ ì•ˆë¨ */
+    /* 2005.11.28 ì¶”ê°€ */
+    /* ì›í™”, \ í‘œì‹œì™€ ê¸ˆì•¡ì‚¬ì´ì˜ Space ì œê±° */
     fmt_str = pfmnum_nrmspace(str, buf_size);
 
-    PRINTF("pfmnum_nrmspace Call ÈÄ buf_size[%ld] fmt_str[%s]\n", buf_size, fmt_str);    
+    PRINTF("pfmnum_nrmspace Call í›„ buf_size[%ld] fmt_str[%s]\n", buf_size, fmt_str);    
 		
     sprintf(rst_str, "%*.*s", (int)buf_size, (int)buf_size, fmt_str);
    
@@ -5151,10 +5127,10 @@ pfmNumToInFmtStrN
     }
     
     
-    PRINTF("Return Àü str[%ld] str[%s]\n", buf_size, rst_str);    
+    PRINTF("Return ì „ str[%ld] str[%s]\n", buf_size, rst_str);    
 
     strcpy(str, rst_str);
-#endif /* 20080425: MRH - ºÒÇÊ¿äÇÑ ·ÎÁ÷¶§¹®¿¡ Á¤·ÄÀÌ Àß ¾ÈµÊ */
+#endif /* 20080425: MRH - ë¶ˆí•„ìš”í•œ ë¡œì§ë•Œë¬¸ì— ì •ë ¬ì´ ì˜ ì•ˆë¨ */
 
     return RC_NRM;
 
@@ -5299,7 +5275,7 @@ pfm_format_align(char *dst, long dst_len, const char *in_fmt, char *src, char al
 	}
      	
 #if 0
-    printf(">>>>>>>> pfm_format_str Call ÈÄ ---- f_str[%d][%s]\n", strlen(f_str), f_str); 
+    printf(">>>>>>>> pfm_format_str Call í›„ ---- f_str[%d][%s]\n", strlen(f_str), f_str); 
 #endif
 
 #if 0
@@ -5364,7 +5340,7 @@ pfm_format_align(char *dst, long dst_len, const char *in_fmt, char *src, char al
 			}
              
 #if 0           
-            printf("[µğ¹ö±ëÁß.... Dest Format String----11111111 [dst[%s] ]\n", dst);      
+            printf("[ë””ë²„ê¹…ì¤‘.... Dest Format String----11111111 [dst[%s] ]\n", dst);      
 #endif                
 
             break;
@@ -5405,7 +5381,7 @@ pfm_format_align(char *dst, long dst_len, const char *in_fmt, char *src, char al
 			}
             else
 			{
-				/* 11.30 ¼öÁ¤ : ¾ÕÀÚ¸® SPACE·Î Ã¤¿ò (%*s%s--> *.*s%s) */
+				/* 11.30 ìˆ˜ì • : ì•ìë¦¬ SPACEë¡œ ì±„ì›€ (%*s%s--> *.*s%s) */
 				sprintf (dst, "%*.*s%s", (int)(dst_len-1-tail_len), (int)(dst_len-1-tail_len), f_str, tail_ptr);
 #if 0
 				printf("FORMATTING >>>>>>>>>>>>>>>>>>>>> dst[%s]\n", dst);    
@@ -5625,11 +5601,11 @@ pfm_format_str(char *dst, const char *fmt, char *src)
 #if 0
                     printf("[%d] --------->post_rtn [%s]\n", __LINE__,post_rtn);
 #endif 
-                    /* 2005.11.14 ¼öÁ¤ : formatÀÌ #ÀÌ¸é¼­ ¼ıÀÚ°¡ 0ÀÎ °æ¿ì Space¸¦ returnÇÏ±â À§ÇØ¼­ */
+                    /* 2005.11.14 ìˆ˜ì • : formatì´ #ì´ë©´ì„œ ìˆ«ìê°€ 0ì¸ ê²½ìš° Spaceë¥¼ returní•˜ê¸° ìœ„í•´ì„œ */
                     if (post_rtn[0] == '\0' && prev_rtn[0] == '0') {
                         dst = NULL;
                     }
-					/* 2008.07.08 Ãß°¡ : ¼Ò¼öÁ¡ ÀÌÇÏ°¡ ¾øÀ»¶§, ¼Ò¼öÁ¡ÀÌ ÂïÈ÷´Â Çö»óÀ» ¸·±â À§ÇØ¼­ */
+					/* 2008.07.08 ì¶”ê°€ : ì†Œìˆ˜ì  ì´í•˜ê°€ ì—†ì„ë•Œ, ì†Œìˆ˜ì ì´ ì°íˆëŠ” í˜„ìƒì„ ë§‰ê¸° ìœ„í•´ì„œ */
 					else if (post_rtn[0] == '\0')
 					{
 						sprintf(dst, "%s", prev_rtn);
