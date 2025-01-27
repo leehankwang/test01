@@ -1,6 +1,6 @@
 /*
  * @file           spfmippr.c
- * @brief          Input PrePRocessing ¼­ºñ½º
+ * @brief          Input PrePRocessing ì„œë¹„ìŠ¤
  * @library
  *
  * @dep-header      pfmcom.h
@@ -25,13 +25,13 @@
  * @dep-outfile
  *
  * @history
- *  ¹ö    Àü : ¼º  ¸í  :  ÀÏ  ÀÚ    :  ±Ù°Å  ÀÚ·á    :          º¯       °æ        ³»       ¿ë
+ *  ë²„    ì „ : ì„±  ëª…  :  ì¼  ìž    :  ê·¼ê±°  ìžë£Œ    :          ë³€       ê²½        ë‚´       ìš©
  *  --------   ------     --------     -----------     ---------------------------------------------
- *   V1.00   : ±èÁ¾Âù  :  20050316  : New Bank ±¸Ãà  :  ½Å±Ô °³¹ß
- *   V2.00   : ±è¼¼È¯  :  20050501  : New Bank ±¸Ãà  :  ±â´ÉÃß°¡
- *   V4.00   : ±è¼¼È¯  :  20050714  : New Bank ±¸Ãà  :  Configurable
- *   V5.00   : ½Å¿µÃ¶  :  20050906  : New Bank ±¸Ãà  :
- *   V6.00   : ½Å¿µÃ¶  :  20060606  : New Bank ±¸Ãà  :  e000->tx_info »ç¿ë »èÁ¦ ¹× OPPR·Î ºÐ±â »èÁ¦
+ *   V1.00   : ê¹€ì¢…ì°¬  :  20050316  : New Bank êµ¬ì¶•  :  ì‹ ê·œ ê°œë°œ
+ *   V2.00   : ê¹€ì„¸í™˜  :  20050501  : New Bank êµ¬ì¶•  :  ê¸°ëŠ¥ì¶”ê°€
+ *   V4.00   : ê¹€ì„¸í™˜  :  20050714  : New Bank êµ¬ì¶•  :  Configurable
+ *   V5.00   : ì‹ ì˜ì²   :  20050906  : New Bank êµ¬ì¶•  :
+ *   V6.00   : ì‹ ì˜ì²   :  20060606  : New Bank êµ¬ì¶•  :  e000->tx_info ì‚¬ìš© ì‚­ì œ ë° OPPRë¡œ ë¶„ê¸° ì‚­ì œ
  *
  */
 /*
@@ -40,47 +40,47 @@
  *  spfmippr. main
  *      a000. init / validation
  *      b000. set pfm_tran
- *      c000. commbuff ¼³Á¤
- *      d000. °Å·¡ °ËÁõ/Á¦¾î
+ *      c000. commbuff ì„¤ì •
+ *      d000. ê±°ëž˜ ê²€ì¦/ì œì–´
  *      e000. image logging
- *      f000. Àü¹®Çì´õ Àç¼³Á¤(¿ª¹æÇâ Async)
- *      g000. °Å·¡ ºÐ±â
+ *      f000. ì „ë¬¸í—¤ë” ìž¬ì„¤ì •(ì—­ë°©í–¥ Async)
+ *      g000. ê±°ëž˜ ë¶„ê¸°
  *
  *	a000. init / validation
- *      1. TP msg header ÀÇ msg length ±æÀÌ °ËÁõ
- *      2. Àü¹® ½ÃÀÛºÎÀÇ Àü¹® ±æÀÌ °ËÁõ
- *      3. CommBuff ÃÊ±âÈ­
- *      4. g_pfm_arch ÃÊ±âÈ­
- *      5. Àü¹®°íÁ¤ºÎ -> PFMIHEAD º¯È¯ & CommBuff setting
+ *      1. TP msg header ì˜ msg length ê¸¸ì´ ê²€ì¦
+ *      2. ì „ë¬¸ ì‹œìž‘ë¶€ì˜ ì „ë¬¸ ê¸¸ì´ ê²€ì¦
+ *      3. CommBuff ì´ˆê¸°í™”
+ *      4. g_pfm_arch ì´ˆê¸°í™”
+ *      5. ì „ë¬¸ê³ ì •ë¶€ -> PFMIHEAD ë³€í™˜ & CommBuff setting
  *
  *  b000. set pfm_tran
- *      1. °Å·¡ ÆÄ¶ó¸ÞÅÍ loading & CommBuff setting
+ *      1. ê±°ëž˜ íŒŒë¼ë©”í„° loading & CommBuff setting
  *
- *  c000. commbuff ¼³Á¤
- *      1. Àü¹®µ¥ÀÌÅÍºÎ -> PFMINPT, XXXINPT, XXXINPT_1 º¯È¯ & CommBuff setting
+ *  c000. commbuff ì„¤ì •
+ *      1. ì „ë¬¸ë°ì´í„°ë¶€ -> PFMINPT, XXXINPT, XXXINPT_1 ë³€í™˜ & CommBuff setting
  *      2. PFMCOMM CommBuff setting
  *          1) System Date
  *          2) System Time
  *          3) Service Name
- *          4) ¿¬µ¿ È½¼ö
+ *          4) ì—°ë™ íšŸìˆ˜
  *          5) Caller Service Name
- *          6) ÇÇ¿¬µ¿ ¿©ºÎ
- *          7) Ã¥ÀÓÀÚ ½ÂÀÎ °Ç¼ö
+ *          6) í”¼ì—°ë™ ì—¬ë¶€
+ *          7) ì±…ìž„ìž ìŠ¹ì¸ ê±´ìˆ˜
  *      3. PFMILOG CommBuff setting
- *      4. ½Ã½ºÅÛ°øÅë, ¾÷¹«°øÅë, ¾÷¹«°³º°ºÎ º¯È¯
+ *      4. ì‹œìŠ¤í…œê³µí†µ, ì—…ë¬´ê³µí†µ, ì—…ë¬´ê°œë³„ë¶€ ë³€í™˜
  *
- *  d000. °Å·¡ °ËÁõ/Á¦¾î
- *      1. TTL °ËÁõ
+ *  d000. ê±°ëž˜ ê²€ì¦/ì œì–´
+ *      1. TTL ê²€ì¦
  *
  *  e000. image logging
- *      1. ÀÔ·Â ¹ÞÀº Àü¹®À» image log¿¡ insert (image log ¸ðµâ È£Ãâ)
- *      2. a000 - c000 Áß¿¡ ¿¡·¯ ¹ß»ý½Ã ¿¡·¯ ÄÚµå¸¦ ¼³Á¤ÇÏ¿© insert
+ *      1. ìž…ë ¥ ë°›ì€ ì „ë¬¸ì„ image logì— insert (image log ëª¨ë“ˆ í˜¸ì¶œ)
+ *      2. a000 - c000 ì¤‘ì— ì—ëŸ¬ ë°œìƒì‹œ ì—ëŸ¬ ì½”ë“œë¥¼ ì„¤ì •í•˜ì—¬ insert
  *
- *  f000. Àü¹®Çì´õ Àç¼³Á¤(¿ª¹æÇâ Async)
+ *  f000. ì „ë¬¸í—¤ë” ìž¬ì„¤ì •(ì—­ë°©í–¥ Async)
  *      1.
  *
- *  g000. °Å·¡ ºÐ±â
- *      1. °Å·¡ ÆÄ¶ó¸ÞÅÍÀÇ ¼­ºñ½º ÀÌ¸§À¸·Î tpforward
+ *  g000. ê±°ëž˜ ë¶„ê¸°
+ *      1. ê±°ëž˜ íŒŒë¼ë©”í„°ì˜ ì„œë¹„ìŠ¤ ì´ë¦„ìœ¼ë¡œ tpforward
  *
  */
 /* --------------------------------------- include files ---------------------------------------- */
@@ -127,10 +127,10 @@
 /* ------------------------------------ structure definitions ----------------------------------- */
 typedef struct spfmippr_ctx_s spfmippr_ctx_t;
 struct spfmippr_ctx_s {
-    char svc_name[MAX_LEN_SVC_NAME + 1];    /* IPPR ¼­ºñ½º ¸í                  */
-    long pfmihead_flag;                     /* PFMIHEAD setting ¿©ºÎ           */
-    long ilog_flag;                         /* ÀÌ¹ÌÁö ·Î±ë ¿©ºÎ                */
-    long timer_flag;                        /* TimerDB read ¿©ºÎ               */
+    char svc_name[MAX_LEN_SVC_NAME + 1];    /* IPPR ì„œë¹„ìŠ¤ ëª…                  */
+    long pfmihead_flag;                     /* PFMIHEAD setting ì—¬ë¶€           */
+    long ilog_flag;                         /* ì´ë¯¸ì§€ ë¡œê¹… ì—¬ë¶€                */
+    long timer_flag;                        /* TimerDB read ì—¬ë¶€               */
 
     char global_id[LEN_GLOBAL_ID + 1];      /* GLOBAL_ID                       */
     char tx_code[LEN_SFG_TX_CODE + 1];      /* TX_CODE                         */
@@ -202,24 +202,24 @@ SPFMIPPR(TPSVCINFO *msg)
     spfmippr_ctx_t  s_ctx;
     spfmippr_ctx_t  *ctx = &s_ctx;
 
-    /* arch ÃÊ±âÈ­ */
+    /* arch ì´ˆê¸°í™” */
     mpfm_pgm_init(PT_ONLINE);
     mpfm_mem_log_dump_init();
 
-    /* 20060518 - analyzer log ³²±âÁö ¾ÊÀ½ */
+    /* 20060518 - analyzer log ë‚¨ê¸°ì§€ ì•ŠìŒ */
     g_pfm_process.log_analyzer_yn = 0;
 
     /* --- AMS LOG --- */
     PFM_TRACE_PGM_S("=-=-=-=-=- START OF SPFMIPPR (Before setting Global_ID)=-=-=-=-=- ");
     /* --- AMS LOG --- */
 
-    /* ÃÊ±âÈ­ ¹× Àü¹®°ËÁõ */
+    /* ì´ˆê¸°í™” ë° ì „ë¬¸ê²€ì¦ */
     PFM_TRY(a000_init_proc(ctx, msg));
-    mpfm_set_proc_step("a000 - ÃÊ±âÈ­ & Àü¹®°ËÁõ ¿Ï·á");
+    mpfm_set_proc_step("a000 - ì´ˆê¸°í™” & ì „ë¬¸ê²€ì¦ ì™„ë£Œ");
 
-    /* commbuff ¼³Á¤ */
+    /* commbuff ì„¤ì • */
     PFM_TRY(b000_set_commbuff(ctx));
-    mpfm_set_proc_step("b000 - Commbuff SET ¿Ï·á");
+    mpfm_set_proc_step("b000 - Commbuff SET ì™„ë£Œ");
 
     /* for sysmaster */
     if (g_pfm_ams.ams_use_flag == 2 && PFM_TRAN->ams_lging_g > 0) {
@@ -231,7 +231,7 @@ SPFMIPPR(TPSVCINFO *msg)
         mpfm_ams_set_trace_level(PFM_TRAN->ams_lging_g, atol(PFM_TRAN->upmu_use_list_nm10) );
     }
 
-    /* --- AMS LOG --- */ /* È­¸é½Ç½À Á¦¿Ü */
+    /* --- AMS LOG --- */ /* í™”ë©´ì‹¤ìŠµ ì œì™¸ */
     if( PFMIHEAD != NULL && PFM_TRAN != NULL && PFMIHEAD->scr_prctc_mode[0] != '1' ) {
         mpfm_ams_log_svc( LOG_TYPE_SVC_S,
                           __FILE__, __func__, __LINE__,
@@ -243,19 +243,19 @@ SPFMIPPR(TPSVCINFO *msg)
     }
     /* --- AMS LOG --- */
 
-    /* °Å·¡Á¦¾î(º¹ÇÕ°Å·¡Á¦¾î) ¸ðµâ */
+    /* ê±°ëž˜ì œì–´(ë³µí•©ê±°ëž˜ì œì–´) ëª¨ë“ˆ */
     PFM_TRY(c000_tx_validation(ctx));
-    mpfm_set_proc_step("c000 - °Å·¡Á¦¾î ¿Ï·á");
+    mpfm_set_proc_step("c000 - ê±°ëž˜ì œì–´ ì™„ë£Œ");
 
-    /* ÀÌ¹ÌÁö ·Î±ë */
+    /* ì´ë¯¸ì§€ ë¡œê¹… */
     PFM_TRY(d000_image_logging(ctx));
-    mpfm_set_proc_step("d000 - ÀÌ¹ÌÁö·Î±ë ¿Ï·á");
+    mpfm_set_proc_step("d000 - ì´ë¯¸ì§€ë¡œê¹… ì™„ë£Œ");
 
     /* PFMIHEAD with the Timer DB the Reset */
     PFM_TRY(e000_reset_header(ctx));
-    mpfm_set_proc_step("e000 - TimerDB Select ¿Ï·á");
+    mpfm_set_proc_step("e000 - TimerDB Select ì™„ë£Œ");
 
-    /* --- AMS LOG --- */ /* È­¸é½Ç½À Á¦¿Ü */
+    /* --- AMS LOG --- */ /* í™”ë©´ì‹¤ìŠµ ì œì™¸ */
     if( PFMIHEAD != NULL && PFM_TRAN != NULL && PFMIHEAD->scr_prctc_mode[0] != '1' ) {
         mpfm_ams_log_svc( LOG_TYPE_SVC_E,
                           __FILE__, __func__, __LINE__,
@@ -266,22 +266,22 @@ SPFMIPPR(TPSVCINFO *msg)
         PFM_DBG("PFMIHEAD == NULL OR PFM_TRAN == NULL");
     }
 
-    /* °Å·¡ºÐ±â */
+    /* ê±°ëž˜ë¶„ê¸° */
     PFM_TRY(f000_forward_svc(ctx));
-    mpfm_set_proc_step("f000 - forward ¿Ï·á");
+    mpfm_set_proc_step("f000 - forward ì™„ë£Œ");
 
 PFM_CATCH:
 
-    mpfm_set_proc_step("z999 - IPPR ¿¡·¯Ã³¸® ½ÃÀÛ");
+    mpfm_set_proc_step("z999 - IPPR ì—ëŸ¬ì²˜ë¦¬ ì‹œìž‘");
 
     z999_err_exit_proc(ctx);
 
-    mpfm_set_proc_step("z999 - IPPR ¿¡·¯Ã³¸® ¿Ï·á");
+    mpfm_set_proc_step("z999 - IPPR ì—ëŸ¬ì²˜ë¦¬ ì™„ë£Œ");
 }
 
 /* --------------------------------------- function body ---------------------------------------- */
 /*
- * ÃÊ±âÈ­ & Àü¹®°ËÁõ 
+ * ì´ˆê¸°í™” & ì „ë¬¸ê²€ì¦ 
  */
 static long
 a000_init_proc(spfmippr_ctx_t *ctx, TPSVCINFO *msg)
@@ -289,25 +289,25 @@ a000_init_proc(spfmippr_ctx_t *ctx, TPSVCINFO *msg)
     long rc = RC_NRM;
     long snd_node_ser;
 
-    /* context ÃÊ±âÈ­ */
+    /* context ì´ˆê¸°í™” */
     memset(ctx, 0x00, sizeof(spfmippr_ctx_t));
 
     /* initialize TPSVCINFO */
     ctx->msg      = msg;
-    /* ÀÔ·Â µ¥ÀÌÅÍ ´ýÇÁ */
-    PFM_DBG( "*************** ´Ü¸» ÀÔ·Â µ¥ÀÌÅÍ[%ld] **************", ctx->msg->len );
+    /* ìž…ë ¥ ë°ì´í„° ë¤í”„ */
+    PFM_DBG( "*************** ë‹¨ë§ ìž…ë ¥ ë°ì´í„°[%ld] **************", ctx->msg->len );
     PFM_HEXDUMP(ctx->msg->data, ctx->msg->len);
-    PFM_DBG( "*************** ´Ü¸» ÀÔ·Â µ¥ÀÌÅÍ[%ld] **************", ctx->msg->len );
+    PFM_DBG( "*************** ë‹¨ë§ ìž…ë ¥ ë°ì´í„°[%ld] **************", ctx->msg->len );
 
     strncpy(ctx->svc_name, ctx->msg->name, MAX_LEN_SVC_NAME);
-    /* 20060518 - arch º¯°æ Àû¿ë */
+    /* 20060518 - arch ë³€ê²½ ì ìš© */
     /* set arch svc_name */
     mpfm_set_pgm_name(ctx->svc_name);
 
     /* get global_id from msg*/
     rc = mpfm_get_global_id(&g_pfm_cfg.icfg, (char *)ctx->msg->data, ctx->global_id);
     if (rc != RC_NRM) {
-        PFM_FAULT(ERR_PF, PFM_LNS, PFM_E5149, "ÀÔ·ÂÀü¹® ¿À·ù!! ÀÔ·ÂÀü¹®¿¡¼­ global id ±¸ÇÏ´ÂÁß ¿¡·¯ ¹ß»ý Çß½À´Ï´Ù");
+        PFM_FAULT(ERR_PF, PFM_LNS, PFM_E5149, "ìž…ë ¥ì „ë¬¸ ì˜¤ë¥˜!! ìž…ë ¥ì „ë¬¸ì—ì„œ global id êµ¬í•˜ëŠ”ì¤‘ ì—ëŸ¬ ë°œìƒ í–ˆìŠµë‹ˆë‹¤");
         return RC_ERR;
     }
     PFM_DBG("GLOB_ID from TPSVCINFO msg: [%s]", ctx->global_id);
@@ -320,7 +320,7 @@ a000_init_proc(spfmippr_ctx_t *ctx, TPSVCINFO *msg)
     /* get tx_code from msg*/
     rc = mpfm_get_tx_code(&g_pfm_cfg.icfg, (char *)ctx->msg->data, ctx->tx_code);
     if (rc != RC_NRM) {
-        PFM_FAULT(ERR_PF, PFM_LNS, PFM_E5150, "ÀÔ·ÂÀü¹® ¿À·ù!! ÀÔ·ÂÀü¹®¿¡¼­ °Å·¡ÄÚµå ±¸ÇÏ´ÂÁß ¿¡·¯ ¹ß»ý Çß½À´Ï´Ù");
+        PFM_FAULT(ERR_PF, PFM_LNS, PFM_E5150, "ìž…ë ¥ì „ë¬¸ ì˜¤ë¥˜!! ìž…ë ¥ì „ë¬¸ì—ì„œ ê±°ëž˜ì½”ë“œ êµ¬í•˜ëŠ”ì¤‘ ì—ëŸ¬ ë°œìƒ í–ˆìŠµë‹ˆë‹¤");
         return RC_ERR;
     }
     PFM_DBG("TX_CODE from TPSVCINFO msg: [%s]", ctx->tx_code);
@@ -328,7 +328,7 @@ a000_init_proc(spfmippr_ctx_t *ctx, TPSVCINFO *msg)
     /* get inst_no from msg*/
     rc = mpfm_get_inst_no(&g_pfm_cfg.icfg, (char *)ctx->msg->data, ctx->inst_no);
     if (rc != RC_NRM) {
-        PFM_FAULT(ERR_PF, PFM_LNS, PFM_E5151, "ÀÔ·ÂÀü¹® ¿À·ù!! ÀÔ·ÂÀü¹®¿¡¼­ ±×·ì»çÄÚµå ±¸ÇÏ´ÂÁß ¿¡·¯ ¹ß»ý Çß½À´Ï´Ù");
+        PFM_FAULT(ERR_PF, PFM_LNS, PFM_E5151, "ìž…ë ¥ì „ë¬¸ ì˜¤ë¥˜!! ìž…ë ¥ì „ë¬¸ì—ì„œ ê·¸ë£¹ì‚¬ì½”ë“œ êµ¬í•˜ëŠ”ì¤‘ ì—ëŸ¬ ë°œìƒ í–ˆìŠµë‹ˆë‹¤");
         return RC_ERR;
     }
     PFM_DBG("INST_NO from TPSVCINFO msg: [%s]", ctx->inst_no);
@@ -336,11 +336,11 @@ a000_init_proc(spfmippr_ctx_t *ctx, TPSVCINFO *msg)
     /* get snd_infc_g from msg*/
     rc = mpfm_get_snd_infc_g(&g_pfm_cfg.icfg, (char *)ctx->msg->data, &ctx->snd_infc_g);
     if (rc != RC_NRM) {
-        PFM_FAULT(ERR_PF, PFM_LNS, PFM_E5152, "ÀÔ·ÂÀü¹® ¿À·ù!! ÀÔ·ÂÀü¹®¿¡¼­ ¼Û½ÅÀÎÅÍÆäÀÌ½º ±¸ÇÏ´ÂÁß ¿¡·¯ ¹ß»ý Çß½À´Ï´Ù");
+        PFM_FAULT(ERR_PF, PFM_LNS, PFM_E5152, "ìž…ë ¥ì „ë¬¸ ì˜¤ë¥˜!! ìž…ë ¥ì „ë¬¸ì—ì„œ ì†¡ì‹ ì¸í„°íŽ˜ì´ìŠ¤ êµ¬í•˜ëŠ”ì¤‘ ì—ëŸ¬ ë°œìƒ í–ˆìŠµë‹ˆë‹¤");
         return RC_ERR;
     }
 
-    /* Àü¹® ±âº» °ËÁõ */
+    /* ì „ë¬¸ ê¸°ë³¸ ê²€ì¦ */
     PFM_TRY( mpfmvldmsg(msg) );
 
     return RC_NRM;
@@ -352,7 +352,7 @@ PFM_CATCH:
 
 /* --------------------------------------- function body ---------------------------------------- */
 /*
- * CommBuff ¼³Á¤ - PFMIHEAD, PFMCOMM, PFM_TRAN, PFMILOG, PFMINPT
+ * CommBuff ì„¤ì • - PFMIHEAD, PFMCOMM, PFM_TRAN, PFMILOG, PFMINPT
  */
 static long
 b000_set_commbuff(spfmippr_ctx_t *ctx)
@@ -402,17 +402,17 @@ PFM_CATCH:
 
 /* --------------------------------------- function body ---------------------------------------- */
 /*
- * °Å·¡Á¦¾î(º¹ÇÕ°Å·¡Á¦¾î) ¸ðµâ
+ * ê±°ëž˜ì œì–´(ë³µí•©ê±°ëž˜ì œì–´) ëª¨ë“ˆ
  */
 static long
 c000_tx_validation(spfmippr_ctx_t *ctx)
 {
     long rc = RC_NRM;
 
-    /* °Å·¡Á¦¾î(º¹ÇÕ°Å·¡Á¦¾î) ¸ðµâ */
+    /* ê±°ëž˜ì œì–´(ë³µí•©ê±°ëž˜ì œì–´) ëª¨ë“ˆ */
     PFM_TRY( mpfmtxcntl(ctx->msg) );
 
-    /* º¹ÇÕ°Å·¡Á¦¾îÈÄ È­¸éÀÔ·Â½Ç½À */
+    /* ë³µí•©ê±°ëž˜ì œì–´í›„ í™”ë©´ìž…ë ¥ì‹¤ìŠµ */
     if(PFMCOMM->trm_prctc_skip_flag == FALSE) {
         if(PFMIHEAD != NULL && PFMIHEAD->scr_prctc_mode[0] == '1') {
             mpfm_tpforward2("SCPM9901F", ctx->msg->data, ctx->msg->len, 0);
@@ -420,7 +420,7 @@ c000_tx_validation(spfmippr_ctx_t *ctx)
     }
     else {
         if(PFMIHEAD != NULL && PFMIHEAD->scr_prctc_mode[0] == '1') {
-            /* ÇöÀç ½Ç½À°Å·¡´Â ÅëÁ¦µÈ »óÅÂÀÔ´Ï´Ù */
+            /* í˜„ìž¬ ì‹¤ìŠµê±°ëž˜ëŠ” í†µì œëœ ìƒíƒœìž…ë‹ˆë‹¤ */
             PFM_ERR("PFM30002", NULL);
             return RC_ERR;
         }
@@ -433,7 +433,7 @@ PFM_CATCH:
 }
 /* --------------------------------------- function body ---------------------------------------- */
 /*
- * ÀÌ¹ÌÁö ·Î±ë
+ * ì´ë¯¸ì§€ ë¡œê¹…
  */
 static long
 d000_image_logging(spfmippr_ctx_t *ctx)
@@ -442,12 +442,12 @@ d000_image_logging(spfmippr_ctx_t *ctx)
     long _rc = RC_NRM;
 
     if( strncmp(ctx->tx_code, "HEALTHCHK000", LEN_SFG_TX_CODE) == 0) {
-        PFM_DBG("HEALTHCHK Àü¹® ÀÌ¹ÌÁö ·Î±ë »ý·« [°Å·¡ÄÚµå:%s]", ctx->tx_code);
+        PFM_DBG("HEALTHCHK ì „ë¬¸ ì´ë¯¸ì§€ ë¡œê¹… ìƒëžµ [ê±°ëž˜ì½”ë“œ:%s]", ctx->tx_code);
         return RC_NRM;
     }
 
     if( PFMIHEAD->scr_prctc_mode[0] == '1' ) {
-        PFM_DSP("È­¸éÀÔ·Â½Ç½À°Å·¡ ÀÌ¹ÌÁö ·Î±ë »ý·« [°Å·¡ÄÚµå:%s]", ctx->tx_code);
+        PFM_DSP("í™”ë©´ìž…ë ¥ì‹¤ìŠµê±°ëž˜ ì´ë¯¸ì§€ ë¡œê¹… ìƒëžµ [ê±°ëž˜ì½”ë“œ:%s]", ctx->tx_code);
         return RC_NRM;
     }
 
@@ -457,7 +457,7 @@ d000_image_logging(spfmippr_ctx_t *ctx)
     }
 
     if( PFMCOMM->ilog_skip_flag == TRUE ) {
-        PFM_DSP("º¹ÇÕ°Å·¡Á¦¾î->ÀÌ¹ÌÁö·Î±ë SKIP [º¹ÇÕ°Å·¡Á¦¾î:%ld][°Å·¡ÄÚµå:%s]", 
+        PFM_DSP("ë³µí•©ê±°ëž˜ì œì–´->ì´ë¯¸ì§€ë¡œê¹… SKIP [ë³µí•©ê±°ëž˜ì œì–´:%ld][ê±°ëž˜ì½”ë“œ:%s]", 
                  PFMCOMM->ilog_skip_flag, ctx->tx_code);
         return RC_NRM;
     }
@@ -468,29 +468,29 @@ d000_image_logging(spfmippr_ctx_t *ctx)
 
     rc = mpfmimglog(&mpfmimglog_ctx);
     if( rc == RC_NRM || mpfmimglog_ctx.ilog_flag == 1 ) { 
-        PFM_DBG("ÀÌ¹ÌÁö·Î±× Áßº¹ ¿©ºÎ [%ld]", mpfmimglog_ctx.ilog_flag);
+        PFM_DBG("ì´ë¯¸ì§€ë¡œê·¸ ì¤‘ë³µ ì—¬ë¶€ [%ld]", mpfmimglog_ctx.ilog_flag);
         _rc = mpfmdbio_commit();
         if( _rc == RC_NRM ) {
             ctx->ilog_flag = 1;
         }
         else {
-            PFM_DSP("IPPR commit Ã³¸®Áß ¿¡·¯ ¹ß»ý !!! [%ld]", _rc);
+            PFM_DSP("IPPR commit ì²˜ë¦¬ì¤‘ ì—ëŸ¬ ë°œìƒ !!! [%ld]", _rc);
             goto PFM_CATCH;
         }
     }
     else {
-        PFM_DBG("ÀÌ¹ÌÁö·Î±× Áßº¹ ¿©ºÎ [%ld]", mpfmimglog_ctx.ilog_flag);
+        PFM_DBG("ì´ë¯¸ì§€ë¡œê·¸ ì¤‘ë³µ ì—¬ë¶€ [%ld]", mpfmimglog_ctx.ilog_flag);
         _rc = mpfmdbio_rollback();
         if( _rc != RC_NRM ) {
-            PFM_DSP("IPPR rollback Ã³¸®Áß ¿¡·¯ ¹ß»ý !!! [%ld]", _rc);
+            PFM_DSP("IPPR rollback ì²˜ë¦¬ì¤‘ ì—ëŸ¬ ë°œìƒ !!! [%ld]", _rc);
         }
         goto PFM_CATCH;
     }
 
-    PFM_DBG("ÀÌ¹ÌÁö ·Î±ë process successfully completed");
+    PFM_DBG("ì´ë¯¸ì§€ ë¡œê¹… process successfully completed");
 
-    /* 20060812 - 0811ÀÏ È¸ÀÇ : dup glob_id ¹ß»ý½Ã ½Å±ÔÃ¤¹øµÈ gid·Î ÀÌ¹ÌÁö·Î±ëÇÏ°í, 
-                  ¿øgid + 1 ·Î Ãâ·ÂÀü¹® »ý¼ºÇÑ´Ù */
+    /* 20060812 - 0811ì¼ íšŒì˜ : dup glob_id ë°œìƒì‹œ ì‹ ê·œì±„ë²ˆëœ gidë¡œ ì´ë¯¸ì§€ë¡œê¹…í•˜ê³ , 
+                  ì›gid + 1 ë¡œ ì¶œë ¥ì „ë¬¸ ìƒì„±í•œë‹¤ */
     if( rc != RC_NRM ) {
         strncpy(PFMIHEAD->glob_id, ctx->global_id, LEN_GLOBAL_ID);
     }
@@ -498,7 +498,7 @@ d000_image_logging(spfmippr_ctx_t *ctx)
     return rc;
 
 PFM_CATCH:
-    PFM_DBG("ÀÌ¹ÌÁö ·Î±ë ½ÇÆÐ: [%ld]", rc);
+    PFM_DBG("ì´ë¯¸ì§€ ë¡œê¹… ì‹¤íŒ¨: [%ld]", rc);
 
     CHK_RESTART_FLAG(pdb_errno());
 
@@ -509,7 +509,7 @@ PFM_CATCH:
 }
 /* --------------------------------------- function body ---------------------------------------- */
 /*
- * ¿ª¹æÇâ Async ÀÏ °æ¿ì PFMIHEAD with the Timer DB the Reset
+ * ì—­ë°©í–¥ Async ì¼ ê²½ìš° PFMIHEAD with the Timer DB the Reset
  */
 static long
 e000_reset_header(spfmippr_ctx_t *ctx)
@@ -537,7 +537,7 @@ PFM_CATCH:
 }
 /* --------------------------------------- function body ---------------------------------------- */
 /*
- * °Å·¡ ÆÄ¶ó¸ÞÅÍ¿¡ µî·ÏµÈ ¼­ºñ½º·Î tpforward() ¼öÇà
+ * ê±°ëž˜ íŒŒë¼ë©”í„°ì— ë“±ë¡ëœ ì„œë¹„ìŠ¤ë¡œ tpforward() ìˆ˜í–‰
  */
 static long
 f000_forward_svc(spfmippr_ctx_t *ctx)
@@ -571,7 +571,7 @@ PFM_CATCH:
     return rc;
 }
 /* --------------------------------------- function body ---------------------------------------- */
-static long
+static longsdfsdf
 z999_err_exit_proc(spfmippr_ctx_t *ctx)
 {
     long rc = RC_NRM;
@@ -592,14 +592,14 @@ z999_err_exit_proc(spfmippr_ctx_t *ctx)
     bzero(target_sys_id, sizeof(target_sys_id));
     bzero(svc_name, sizeof(svc_name));
 
-    /* ¿¡·¯Ã³¸®Áß ¿¡·¯¹ß»ý½Ã return RC_ERR ÇÊ¿äÄ¡ ¾ÊÀ½ */
-    /* ÀÌ¹ÌÁö ·Î±ë Àü¿¡ ¿¡·¯³­ °æ¿ì¿¡´Â ÀÌ¹ÌÁö ·Î±ë ÈÄ tpreturn */
+    /* ì—ëŸ¬ì²˜ë¦¬ì¤‘ ì—ëŸ¬ë°œìƒì‹œ return RC_ERR í•„ìš”ì¹˜ ì•ŠìŒ */
+    /* ì´ë¯¸ì§€ ë¡œê¹… ì „ì— ì—ëŸ¬ë‚œ ê²½ìš°ì—ëŠ” ì´ë¯¸ì§€ ë¡œê¹… í›„ tpreturn */
     if (ctx->ilog_flag == FALSE) {
         if( !ctx->pfmihead_flag ) {
-            PFM_DBG("PFMIHEAD ¼³Á¤ Àü ¿¡·¯ ¹ß»ý : [%s]", mpfm_err_code());
+            PFM_DBG("PFMIHEAD ì„¤ì • ì „ ì—ëŸ¬ ë°œìƒ : [%s]", mpfm_err_code());
             rc = mpfmdefstdhdr(ctx->msg, mpfm_err_code());
             if( rc != RC_NRM ) {
-                PFM_FAULT(ERR_PF, PFM_LNS, PFM_E5004, "SPFMIPPR µðÆúÆ® Çì´õ »ý¼ºÁß ¿¡·¯ ¹ß»ý Çß½À´Ï´Ù [%s] [%s]",
+                PFM_FAULT(ERR_PF, PFM_LNS, PFM_E5004, "SPFMIPPR ë””í´íŠ¸ í—¤ë” ìƒì„±ì¤‘ ì—ëŸ¬ ë°œìƒ í–ˆìŠµë‹ˆë‹¤ [%s] [%s]",
                           mpfm_err_code(), mpfm_err_msg());
                 goto output_proc;
             }
@@ -614,30 +614,30 @@ z999_err_exit_proc(spfmippr_ctx_t *ctx)
 
         rc = d000_image_logging(ctx);
         if( rc != RC_NRM && ctx->ilog_flag != 1 ) {
-            PFM_FAULT(ERR_PF, PFM_LNS, PFM_E5005, "SPFMIPPR¿¡¼­ ÀÌ¹ÌÁö ·Î±ë ½ÇÆÐ Çß½À´Ï´Ù");
+            PFM_FAULT(ERR_PF, PFM_LNS, PFM_E5005, "SPFMIPPRì—ì„œ ì´ë¯¸ì§€ ë¡œê¹… ì‹¤íŒ¨ í–ˆìŠµë‹ˆë‹¤");
         }
     }
 
 output_proc:
-    /* ¿¡·¯¸Þ½ÃÁö »ý¼º */
+    /* ì—ëŸ¬ë©”ì‹œì§€ ìƒì„± */
     PFM_DBG("err_code: [%s], err_msg: [%s]", mpfm_err_code(), mpfm_err_msg());
 
     PFM_SET_DEFAULT_ERR();
 
     if( defhead_flag ) {
-        PFM_FAULT(ERR_PF, PFM_LNS, PFM_E5140, "Àü¹®Çì´õ º¯È¯ Àü¿¡ ¿À·ù ¹ß»ýÇÏ¿© µðÆúÆ® Çì´õ·Î Ãâ·ÂÇÕ´Ï´Ù");
+        PFM_FAULT(ERR_PF, PFM_LNS, PFM_E5140, "ì „ë¬¸í—¤ë” ë³€í™˜ ì „ì— ì˜¤ë¥˜ ë°œìƒí•˜ì—¬ ë””í´íŠ¸ í—¤ë”ë¡œ ì¶œë ¥í•©ë‹ˆë‹¤");
     }
 
-    /* ¿¡·¯Àü¹® »ý¼º */
+    /* ì—ëŸ¬ì „ë¬¸ ìƒì„± */
     if( PFMIHEAD != NULL && PFMCOMM != NULL ) {
         /* gid + 1 */
         rc = mpfm_stdout_msg(1);
         if (rc != RC_NRM) {
-            PFM_FAULT(ERR_PF, PFM_LNS, PFM_E5139, "SPFMIPPR ¿¡·¯Àü¹® »ý¼ºÁß ¿¡·¯ ¹ß»ý Çß½À´Ï´Ù.");
+            PFM_FAULT(ERR_PF, PFM_LNS, PFM_E5139, "SPFMIPPR ì—ëŸ¬ì „ë¬¸ ìƒì„±ì¤‘ ì—ëŸ¬ ë°œìƒ í–ˆìŠµë‹ˆë‹¤.");
         }
     }
 
-    /* --- AMS LOG --- */ /* È­¸é½Ç½À Á¦¿Ü */
+    /* --- AMS LOG --- */ /* í™”ë©´ì‹¤ìŠµ ì œì™¸ */
     if( PFMIHEAD != NULL && PFM_TRAN != NULL && PFMIHEAD->scr_prctc_mode[0] != '1' ) {
         mpfm_ams_log_svc( LOG_TYPE_SVC_E,
                           __FILE__, __func__, __LINE__,
@@ -652,33 +652,33 @@ output_proc:
 
     /* ------------------------------------------------------------------------ */
     /* 1. Async                                                                 */
-    /*    - ¿äÃ»ÀÀ´ä±¸ºÐ==¿äÃ»(S)                                               */
-    /*    - Async¼Ó¼º==¾ç¹æÇâ(1)                                    : tpacall   */
-    /* 2. Sync, Async-´Ü¹æÇâ||ÀÀ´ä, Àü¹® parsing ½ÇÆÐ                           */
+    /*    - ìš”ì²­ì‘ë‹µêµ¬ë¶„==ìš”ì²­(S)                                               */
+    /*    - Asyncì†ì„±==ì–‘ë°©í–¥(1)                                    : tpacall   */
+    /* 2. Sync, Async-ë‹¨ë°©í–¥||ì‘ë‹µ, ì „ë¬¸ parsing ì‹¤íŒ¨                           */
     /*    - Sync                                                    : clireturn */
-    /*    - Async¼Ó¼º==´Ü¹æÇâ(0, space) / ¿äÃ»ÀÀ´ä±¸ºÐ(R)           : clireturn */
-    /*    - ÀÔ·ÂÀü¹® parsing ½ÇÆÐ                                   : clireturn */
+    /*    - Asyncì†ì„±==ë‹¨ë°©í–¥(0, space) / ìš”ì²­ì‘ë‹µêµ¬ë¶„(R)           : clireturn */
+    /*    - ìž…ë ¥ì „ë¬¸ parsing ì‹¤íŒ¨                                   : clireturn */
     /* ------------------------------------------------------------------------ */
 
     if( PFMIHEAD != NULL && PFMCOMM != NULL && PFMOUTQ != NULL ) {
    		
    		/* 1. Async                                                                 */
-        /*    - ¿äÃ»ÀÀ´ä±¸ºÐ==¿äÃ»(S)                                               */
-        /*    - Async¼Ó¼º==¾ç¹æÇâ(1)                                    : tpacall   */
+        /*    - ìš”ì²­ì‘ë‹µêµ¬ë¶„==ìš”ì²­(S)                                               */
+        /*    - Asyncì†ì„±==ì–‘ë°©í–¥(1)                                    : tpacall   */
         if( PFMIHEAD->rqst_resp_g[0] == 'S' && 
             PFMIHEAD->sync_g[0] == 'A' && PFMIHEAD->async_atrb[0] == '1' ) {
      
             sndlen = mpfm_get_item_size(IDX_PFMOUTQ);
             sndbuf = mpfm_tpalloc("CARRAY", sndlen);
             if( sndbuf == NULL ) {
-                PFM_FAULT(ERR_PF, PFM_LNS, PFM_E5002, "SPFMIPPR¿¡¼­ tpalloc ½ÇÆÐ Çß½À´Ï´Ù");
+                PFM_FAULT(ERR_PF, PFM_LNS, PFM_E5002, "SPFMIPPRì—ì„œ tpalloc ì‹¤íŒ¨ í–ˆìŠµë‹ˆë‹¤");
             }
  
             memcpy(sndbuf, PFMOUTQ, sndlen);
  
             PFM_HEXDUMP(sndbuf, sndlen);
  
-            /* Ã¤³ÎMCA, EAI, ´ë¿Ü°è - EAI load balancing ÇÏÁö ¾ÊÀ½ */
+            /* ì±„ë„MCA, EAI, ëŒ€ì™¸ê³„ - EAI load balancing í•˜ì§€ ì•ŠìŒ */
             if( PFMIHEAD->snd_infc_g == 1 || PFMIHEAD->snd_infc_g == 6 || PFMIHEAD->snd_infc_g == 2 || /* EA2 */
                 PFMIHEAD->snd_infc_g == 3 || PFMIHEAD->snd_infc_g == 4) {
                 rc = pfm_get_node_info(src_sys_id, &src_node_ser);
@@ -695,7 +695,7 @@ output_proc:
                         strncpy(target_sys_id, SYS_ID_EAI, LEN_SYS_ID - 1);
                     }
                     else {
-                        PFM_FAULT(ERR_PF, PFM_LNS, PFM_E5119, "Ã³¸® ºÒ°¡ÇÑ ¼Û½ÅÀÎÅÍÆäÀÌ½º±¸ºÐ[%ld] ÀÔ´Ï´Ù", PFMIHEAD->snd_infc_g);
+                        PFM_FAULT(ERR_PF, PFM_LNS, PFM_E5119, "ì²˜ë¦¬ ë¶ˆê°€í•œ ì†¡ì‹ ì¸í„°íŽ˜ì´ìŠ¤êµ¬ë¶„[%ld] ìž…ë‹ˆë‹¤", PFMIHEAD->snd_infc_g);
                     }
   
                     if ( (PFMIHEAD->snd_infc_g != 6 && PFMIHEAD->snd_infc_g != 2) && /* EA2 */
@@ -708,7 +708,7 @@ output_proc:
   
                     rc = pfm_load_balance(src_sys_id, src_node_ser, target_sys_id, target_node_ser_in, &target_node_ser_out, svc_name);
                     if (rc != RC_NRM) {
-                        PFM_DBG("target systemÀÌ pfm_obst Å×ÀÌºí¿¡ µî·ÏµÇÁö ¾Ê¾Ò°Å³ª, °¡¿ëÇÑ ³ëµå¸¦ Ã£À» ¼ö ¾ø½À´Ï´Ù");
+                        PFM_DBG("target systemì´ pfm_obst í…Œì´ë¸”ì— ë“±ë¡ë˜ì§€ ì•Šì•˜ê±°ë‚˜, ê°€ìš©í•œ ë…¸ë“œë¥¼ ì°¾ì„ ìˆ˜ ì—†ìŠµë‹ˆë‹¤");
                     }
                     else {
                         PFM_DBG("src_sys_id          [%s]", src_sys_id);
@@ -720,19 +720,19 @@ output_proc:
   
                         rc = mpfm_tpacall2(&cd, svc_name, sndbuf, sndlen, TPNOTRAN|TPBLOCK|TPNOREPLY);
                         if (rc != RC_NRM) {
-                            PFM_FAULT(ERR_PF, PFM_LNS, PFM_E5142, "SPFMIPPR tpacall2 ¼öÇàÁß ¿¡·¯ ¹ß»ý Çß½À´Ï´Ù.");
+                            PFM_FAULT(ERR_PF, PFM_LNS, PFM_E5142, "SPFMIPPR tpacall2 ìˆ˜í–‰ì¤‘ ì—ëŸ¬ ë°œìƒ í–ˆìŠµë‹ˆë‹¤.");
                         }
                     }
                 }
                 else {
-                    PFM_FAULT(ERR_PF, PFM_LNS, PFM_E5191, "È£½ºÆ®ÀÌ¸§ÀÌ [%s] ³ëµå¸¦ ±¸ÇÏ´Âµ¥ ½ÇÆÐ Çß½À´Ï´Ù", g_pfm_process.hostname);
+                    PFM_FAULT(ERR_PF, PFM_LNS, PFM_E5191, "í˜¸ìŠ¤íŠ¸ì´ë¦„ì´ [%s] ë…¸ë“œë¥¼ êµ¬í•˜ëŠ”ë° ì‹¤íŒ¨ í–ˆìŠµë‹ˆë‹¤", g_pfm_process.hostname);
                 }
             }
             else if (PFMIHEAD->snd_infc_g == 5 || PFMIHEAD->snd_infc_g == 0) {
-                PFM_FAULT(ERR_PF, PFM_LNS, PFM_E5192, "¿¡·¯Àü¹®À» ÄÚ¾î[¼Û½ÅÀÎÅÍÆäÀÌ½º±¸ºÐ(%ld)]·Î Àü¼ÛÇÏÁö ¾Ê½À´Ï´Ù.", PFMIHEAD->snd_infc_g);
+                PFM_FAULT(ERR_PF, PFM_LNS, PFM_E5192, "ì—ëŸ¬ì „ë¬¸ì„ ì½”ì–´[ì†¡ì‹ ì¸í„°íŽ˜ì´ìŠ¤êµ¬ë¶„(%ld)]ë¡œ ì „ì†¡í•˜ì§€ ì•ŠìŠµë‹ˆë‹¤.", PFMIHEAD->snd_infc_g);
             }
             else {
-                PFM_FAULT(ERR_PF, PFM_LNS, PFM_E5119, "Ã³¸® ºÒ°¡ÇÑ ¼Û½ÅÀÎÅÍÆäÀÌ½º±¸ºÐ[%ld] ÀÔ´Ï´Ù", PFMIHEAD->snd_infc_g);
+                PFM_FAULT(ERR_PF, PFM_LNS, PFM_E5119, "ì²˜ë¦¬ ë¶ˆê°€í•œ ì†¡ì‹ ì¸í„°íŽ˜ì´ìŠ¤êµ¬ë¶„[%ld] ìž…ë‹ˆë‹¤", PFMIHEAD->snd_infc_g);
             }
  
             if(sndbuf) {
@@ -748,15 +748,15 @@ output_proc:
             }
  
         }
-        /* 2. Sync, Async, Àü¹® parsing ½ÇÆÐ                                        */
+        /* 2. Sync, Async, ì „ë¬¸ parsing ì‹¤íŒ¨                                        */
         /*    - Sync                                                    : clireturn */
-        /*    - Async¼Ó¼º==´Ü¹æÇâ(0, space) / ¿äÃ»ÀÀ´ä±¸ºÐ(R)           : clireturn */
-        /*    - ÀÔ·ÂÀü¹® parsing ½ÇÆÐ                                   : clireturn */
+        /*    - Asyncì†ì„±==ë‹¨ë°©í–¥(0, space) / ìš”ì²­ì‘ë‹µêµ¬ë¶„(R)           : clireturn */
+        /*    - ìž…ë ¥ì „ë¬¸ parsing ì‹¤íŒ¨                                   : clireturn */
         else {
             if( PFMIHEAD->rqst_resp_g[0] == 'R' && PFMIHEAD->sync_g[0] == 'A' ) {
-                PFM_FAULT(ERR_PF, PFM_LNS, PFM_E5195, "Async-ÀÀ´äÀü¹® ¿¡·¯¹ß»ý½Ã ÀÀ´äÀü¹® Àü¼Û ÇÏÁö ¾Ê½À´Ï´Ù"); 
+                PFM_FAULT(ERR_PF, PFM_LNS, PFM_E5195, "Async-ì‘ë‹µì „ë¬¸ ì—ëŸ¬ë°œìƒì‹œ ì‘ë‹µì „ë¬¸ ì „ì†¡ í•˜ì§€ ì•ŠìŠµë‹ˆë‹¤"); 
                 for (i = 0; i < g_pfm_err.err_msg_cnt ; i++) {
-                    PFM_DSP("Async-ÀÀ´äÀü¹® ¿¡·¯³»¿ë : [%ld-%s]", i, g_pfm_err.err_msg[i]);
+                    PFM_DSP("Async-ì‘ë‹µì „ë¬¸ ì—ëŸ¬ë‚´ìš© : [%ld-%s]", i, g_pfm_err.err_msg[i]);
                 }
             }
 
